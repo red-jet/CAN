@@ -1,0 +1,27 @@
+/*@!Encoding:1252*/
+includes
+{
+  
+}
+
+variables
+{
+  message 0x001 airbag;  
+}
+
+on start
+{
+        write("AIRBAG WORKING");
+}
+
+on key 'a' 
+{
+        write ("Airbag open");
+        airbag.dlc=1;
+        airbag.rtr=0;
+        airbag.byte(0)=0x01;
+        
+        output(airbag);
+}
+
+
