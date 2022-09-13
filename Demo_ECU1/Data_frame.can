@@ -16,12 +16,12 @@ on start
 
 on key 'a' 
 {
-        write ("Airbag open");
         airbag.dlc=1;
         airbag.rtr=0;
         airbag.byte(0)=0x01;
         
         output(airbag);
+        write ("Airbag open");
 }
 
 
