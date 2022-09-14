@@ -1,0 +1,52 @@
+/*@!Encoding:1252*/
+includes
+{
+  
+}
+
+variables
+{
+        message 0x123 m1;     // Data frame
+        message 0x5AB m2;     // Remote frame
+}
+
+
+on key 'a' 
+{
+        /* Send data frame */
+        m1.rtr = 0;
+        m1.dlc = 2;
+        m1.byte(0) = 0xAA;
+        m1.byte(1) = 0x23;
+        
+        output(m1);
+        
+        write("NODE Tx : Data frame is sent (m1)\n");
+}
+
+on key 'b'
+{
+        m2.rtr = 1;
+        m2.dlc = 3;
+        
+        output(m2);
+        
+        write("NODE Tx : Remote frame is sent (m2)\n");        
+}
+
+on message 0x5AB 
+{
+        if (this.rtr == 0)
+        {
+                int i=0;
+                write("NODE Tx : RECEIVED MESSAGE");
+                write("RX ID = %X", this.id);
+                write("RX DLC = %X", this.dlc);
+              
+                for (i=0; i < this.dlc; i++)
+                {
+                        write("RX BYTE (%d) = %X", i, this.byte(i));
+                }
+                write("\n");
+        }
+}

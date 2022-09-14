@@ -1,0 +1,46 @@
+/*@!Encoding:1252*/
+includes
+{
+  
+}
+
+variables
+{
+  
+}
+
+on message *
+{
+        if (this.rtr == 0 && this.id != 0x5AB)
+        {
+                int i=0;
+                write("NODE Rx : RECEIVED MESSAGE - DATA FRAME");
+                write("RX ID = %X", this.id);
+                write("RX DLC = %X", this.dlc);
+                
+                for (i=0; i < this.dlc; i++)
+                {
+                        write("RX BYTE (%d) = %X", i, this.byte(i));
+                }
+                write("\n");
+        }
+        else if (this.rtr == 1)
+        {
+                int i;
+                message * r;
+                write("NODE Rx : RECEIVED MESSAGE - REMOTE FRAME");
+                write("RX ID = %X", this.id);
+                write("RX DLC = %X", this.dlc);
+                
+                r.id = this.id;
+                r.rtr = 0;
+                r.dlc = this.dlc;
+                
+                for (i=0; i<this.dlc; i++)
+                {
+                        r.byte(i)=0x65+i;
+                }
+                output(r);     
+                write("\n");
+        }
+}
