@@ -1,0 +1,20 @@
+/*@!Encoding:1252*/
+includes
+{
+  
+}
+
+variables
+{
+  
+}
+
+on message 0x123
+{
+        if (this.byte(0))
+                write ("Front Light is ON");
+        else
+                write ("Front Light is OFF");
+        @Light::sysvarLight=this.byte(0);
+        
+}

@@ -1,0 +1,20 @@
+/*@!Encoding:1252*/
+includes
+{
+  
+}
+
+variables
+{
+        message FLCM_RLCM m;
+}
+
+
+on sysvar Light::sysvarSwitch
+{
+        m.rtr = 0;
+        m.byte(0)= @Light::sysvarSwitch;
+        
+        output(m);      
+}
+
