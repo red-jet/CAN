@@ -1,0 +1,48 @@
+/*@!Encoding:1252*/
+includes
+{
+  
+}
+
+variables
+{
+  
+}
+
+on message Light_Message
+{
+        @LIGHT_namespace::svHeadLight = this.Light;
+        if (this.Light == 0x00)
+        {
+                write("FLCM : Headlight ON");
+        }
+        else
+        {
+                write("FLCM : Headlight OFF");
+        }
+}
+
+on message Indicator_Message
+{
+        switch(this.Indicator)
+        {
+         
+                case 0x00 :     @LIGHT_namespace::svFront_LeftIndicator = 0x00;
+                                @LIGHT_namespace::svFront_RightIndicator = 0x00;
+                                break;
+                        
+                case 0x01 :     @LIGHT_namespace::svFront_LeftIndicator = 0x01;
+                                break;
+                        
+                case 0x02 :     @LIGHT_namespace::svFront_RightIndicator = 0x01;
+                                break;
+                        
+                case 0x03 :     @LIGHT_namespace::svFront_LeftIndicator = 0x01;
+                                @LIGHT_namespace::svFront_RightIndicator = 0x01;
+                                break;
+                        
+                default   :     @LIGHT_namespace::svFront_LeftIndicator = 0x00;
+                                @LIGHT_namespace::svFront_RightIndicator = 0x00;
+                                break;      
+        }
+}

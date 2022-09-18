@@ -1,0 +1,48 @@
+/*@!Encoding:1252*/
+includes
+{
+  
+}
+
+variables
+{
+  
+}
+
+on message Light_Message
+{
+        @LIGHT_namespace::svTailLight = this.Light;
+        if (this.Light == 0x00)
+        {
+                write("RLCM : Headlight ON");
+        }
+        else
+        {
+                write("RLCM : Headlight OFF");
+        }
+}
+
+on message Indicator_Message
+{
+        switch(this.Indicator)
+        {
+         
+                case 0x00 :     @LIGHT_namespace::svRear_LeftIndicator = 0x00;
+                                @LIGHT_namespace::svRear_RightIndicator = 0x00;
+                                break;
+                        
+                case 0x01 :     @LIGHT_namespace::svRear_LeftIndicator = 0x01;
+                                break;
+                        
+                case 0x02 :     @LIGHT_namespace::svRear_RightIndicator = 0x01;
+                                break;
+                        
+                case 0x03 :     @LIGHT_namespace::svRear_LeftIndicator = 0x01;
+                                @LIGHT_namespace::svRear_RightIndicator = 0x01;
+                                break;
+                        
+                default   :     @LIGHT_namespace::svRear_LeftIndicator = 0x00;
+                                @LIGHT_namespace::svRear_RightIndicator = 0x00;
+                                break;      
+        }
+}

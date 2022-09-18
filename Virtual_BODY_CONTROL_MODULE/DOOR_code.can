@@ -1,0 +1,24 @@
+/*@!Encoding:1252*/
+includes
+{
+  
+}
+
+variables
+{
+  
+}
+
+on message CentralLock_Message
+{
+         @CentalLock_namespace::svCentalLockDoor = this.CentralLock;
+        
+        if(this.CentralLock == 0x00)
+        {
+                write("DOOR : Central Lock UNLOCKED");
+        }
+        else
+        {
+                write("DOOR : Central Lock LOCKED");
+        }
+}

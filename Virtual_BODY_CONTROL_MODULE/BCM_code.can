@@ -1,0 +1,175 @@
+/*@!Encoding:1252*/
+includes
+{
+  
+}
+
+variables
+{
+        message CentralLock_Message cm;
+        message Light_Message lm;
+        message Indicator_Message im;
+        msTimer indicator_timer_LeftIndicatior_ON;
+        msTimer indicator_timer_RightIndicatior_ON;
+        msTimer indicator_parkingLight_ON;
+        msTimer indicator_timer_OFF;
+}
+
+on timer indicator_parkingLight_ON
+{
+        im.Indicator.phys = 0x03;
+        output(im);
+        
+        setTimer(indicator_timer_OFF,1000);
+        setTimer(indicator_parkingLight_ON,2000);
+        
+}
+
+on timer indicator_timer_RightIndicatior_ON
+{
+        im.Indicator.phys = 0x02;
+        output(im);
+        
+        setTimer(indicator_timer_OFF, 1000);
+        setTimer(indicator_timer_RightIndicatior_ON, 2000);
+}
+
+on timer indicator_timer_LeftIndicatior_ON
+{
+        im.Indicator.phys = 0x01;
+        output(im);
+        
+        setTimer(indicator_timer_OFF, 1000);
+        setTimer(indicator_timer_LeftIndicatior_ON, 2000);
+}
+
+on timer indicator_timer_OFF
+{
+        im.Indicator.phys = 0x00;
+        output(im);
+}
+
+
+
+on sysvar SWITCH_namespace::svParkingLightSW
+{
+        if (@SWITCH_namespace::svParkingLightSW == 0x01)
+        {
+                setTimer(indicator_parkingLight_ON,0);
+                cancelTimer(indicator_timer_LeftIndicatior_ON);
+                cancelTimer(indicator_timer_RightIndicatior_ON);
+                
+        }
+        else
+        {
+                cancelTimer(indicator_parkingLight_ON);
+                setTimer(indicator_timer_OFF,0);
+                
+                if (@SWITCH_namespace::svLeftIndicatorSW)
+                {
+                        setTimer(indicator_timer_LeftIndicatior_ON,0);
+                }
+                else if(@SWITCH_namespace::svRightIndicatorSW)
+                {
+                        setTimer(indicator_timer_RightIndicatior_ON,0);
+                }
+                
+                
+         }
+}
+
+on sysvar SWITCH_namespace::svLeftIndicatorSW
+{
+        if ((@SWITCH_namespace::svLeftIndicatorSW == 0x01) && (@SWITCH_namespace::svParkingLightSW != 0x01))
+        {      
+                @SWITCH_namespace::svRightIndicatorSW = 0x00;
+                
+                setTimer(indicator_timer_OFF,0);
+                        
+                setTimer(indicator_timer_LeftIndicatior_ON,0); 
+        }
+        
+        else if ((@SWITCH_namespace::svLeftIndicatorSW == 0x00) && (@SWITCH_namespace::svParkingLightSW != 0x01))
+        {
+                cancelTimer(indicator_timer_LeftIndicatior_ON);
+                                        
+                setTimer(indicator_timer_OFF,0); 
+        }
+        else if ((@SWITCH_namespace::svRightIndicatorSW == 0x01) &&(@SWITCH_namespace::svLeftIndicatorSW == 0x01))
+        {
+                @SWITCH_namespace::svRightIndicatorSW = 0x00; 
+                @SWITCH_namespace::svLeftIndicatorSW = 0x00;
+        }
+}
+
+on sysvar SWITCH_namespace::svRightIndicatorSW
+{
+        if ((@SWITCH_namespace::svRightIndicatorSW == 0x01) && (@SWITCH_namespace::svParkingLightSW != 0x01))
+        {
+                @SWITCH_namespace::svLeftIndicatorSW = 0x00;
+                
+                setTimer(indicator_timer_OFF,0);
+                        
+                setTimer(indicator_timer_RightIndicatior_ON,0);
+              
+        }
+        
+        else if ((@SWITCH_namespace::svRightIndicatorSW == 0x00) && (@SWITCH_namespace::svParkingLightSW) != 0x01)
+        {
+               
+                cancelTimer(indicator_timer_RightIndicatior_ON);
+                        
+                setTimer(indicator_timer_OFF,0);
+              
+                
+        }
+        else if ((@SWITCH_namespace::svRightIndicatorSW == 0x01) &&(@SWITCH_namespace::svLeftIndicatorSW == 0x01))
+        {
+                @SWITCH_namespace::svRightIndicatorSW = 0x00; 
+                @SWITCH_namespace::svLeftIndicatorSW = 0x00;
+        }
+}
+
+
+
+on sysvar SWITCH_namespace::svLightSW
+{
+        if (@SWITCH_namespace::svLightSW == 0x01)
+        {
+                lm.Light.phys = 0x01;
+                
+                output(lm);
+                
+                write("BCM : Light ON");
+        }
+        else 
+        {
+                lm.Light.phys = 0x00;
+                
+                output(lm);
+                
+                write("BCM : Light OFF");               
+        }
+}
+
+
+
+on sysvar SWITCH_namespace::svCentralLockSW
+{
+        if (@SWITCH_namespace::svCentralLockSW == 0x01)
+        {
+                cm.CentralLock.phys = 0x01; 
+                
+                output(cm);
+                
+                write("BCM : Central Lock LOCKED");
+        }
+        else
+        {
+                cm.CentralLock.phys = 0x00; 
+                
+                output(cm);
+                
+                write("BCM : Cental Lock UNLOCKED");
+        }
+}
